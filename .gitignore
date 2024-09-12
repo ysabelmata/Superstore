@@ -329,7 +329,7 @@ __pycache__/
 
 # Cake - Uncomment if you are using it
 # tools/**
-# !tools/packages.config
+* .DS_store
 
 # Tabs Studio
 *.tss
@@ -396,4 +396,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-.DS_store
+*.DS_store
