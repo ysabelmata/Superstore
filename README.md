@@ -1,64 +1,43 @@
-## ETL Superstore 
+## ETL Superstore :department_store: :shopping_cart:
 
 ## Temas
 
 - :hammer_and_wrench: [Herramientas](#herramientas)
 - </> [Lenguajes](#lenguajes)
 - :gear: [Procesamiento y preparación de datos](#procesamiento-y-preparación-de-datos)
+- ::memo::pencil: [Ficha Técnica y Documentación](/Ficha_Tecnica/superstore.mwb)
 - :bar_chart: [Visualización y Análisis de Datos](/Visualizacion/README.md)
 - :heavy_check_mark: [Conclusiones y Recomendaciones](/Presentacion/README.md)
 
 
 ## Objetivo
 
-1. Calcular Métricas de Uso Diario:
-   * Determinar el número promedio de viajes realizados en un día típico.
-       * Calcular las estadísticas de duración de los viajes, incluyendo los valores máximos, mínimos, promedio y la desviación estándar.
-2. Evaluar Métricas Históricas:
-   * Calcular el total de viajes realizados en el programa de bicicletas compartidas.
-3. Analizar el crecimiento del número de viajes diarios a lo largo del tiempo.
-   * Desglosar el total de viajes según el género/edad o tipo de suscripción de los usuarios.
-4. Derivar Conclusiones y Recomendaciones:
-   * Identificar patrones y tendencias a partir de los datos analizados.
-5. Ofrecer recomendaciones estratégicas basadas en los hallazgos para la nueva CEO.
+A través del proceso ETL(Extracción, Transformación y Carga), construir un sistema tabular para la tienda superstore que nos permita almacenar datos de manera eficiente y consultar estos datos más fácilmente.
 
    
 ## Procesamiento y preparación de datos
 
 1. Conectar/importar datos a herramientas:
 
-* Se creó el City-Bikes y el conjunto de datos Dataset en BigQuery.
+* Se creó el proyecto Superstore y el conjunto de datos Dataset en BigQuery.
 
 * Tablas importadas: 
 
-    * city_bike_trips.
+    - superstore.
 
-2. Identificar y manejar valores nulos:
-
-* Se identifican valores nulos a través del comando SQL COUNTIF.
-* Se eliminaron los valores nulos para la edad .
-* birth_year: 4796 nulos que representan el 9.59% del total de los registros, quedando 45204 registros en total.
-
+2. Identificar y manejar valores nulos.
 
 3. Identificar y manejar valores duplicados:
 
-* No se encontraron registros duplicados de viajes.
+* No se encontraron registros duplicados.
 
-4. Identificar y manejar datos fuera del alcance del análisis:
+4. Identificar y manejar datos discrepantes en variables categóricas.
 
-* customer_plan: se excluyó la columna ya que no tenía información en ninguno de los registros, solo 50000 valores nulos.
-* Se calculó la edad de los usuarios con EXTRACT(YEAR FROM CURRENT_DATE()) - birth_year) y se observó que habían  157 usuarios > 80 años , por la edad es posible que las fechas de nacimiento ingresadas no sean las correctas por lo cual se dejaron estos registros fuera del análisis.
+5. Buscar datos de otras fuentes:
 
-5. Crear nuevas variables:
+* Se hizo Web scraping, se utilizó Python para extraer los datos de la tabla “multinacional” de la página https://en.wikipedia.org/wiki/List_of_supermarket_chains, para incluir a los competidores en la estructura de datos de la empresa Super Store. Se eliminaron 59 registros  del archivo multinational.csv, que no tenían datos en las columnas de num_ empleado,  num_locat y  served_countries.
 
-* trip_duration_minutos: Se creó la variable duración del viaje en minutos.
-* stop_date: se cambió el tipo de datos de la variable stoptime a date para tener solo la fecha del viaje.
-
-6. Unir tablas:
-
-* Se creo una vista view_city_bike_trips , con las nuevas variables y excluyendo la que no era relevante para nuestro análisis.
-
-Este proceso es fundamental para asegurar la calidad y precisión del análisis subsiguiente.
+Para ver el diseño de la Estructura de la Base de datos revisar: [Ficha Técnica y Documentación](/Ficha_Tecnica/superstore.mwb)
 
 ## Herramientas
 
@@ -66,6 +45,7 @@ Este proceso es fundamental para asegurar la calidad y precisión del análisis 
 * Looker Studio
 * Google Docs
 * Google Slide
+* Google Colab
 
 ## Lenguajes
 
