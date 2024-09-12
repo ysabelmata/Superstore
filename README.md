@@ -5,7 +5,7 @@
 - :hammer_and_wrench: [Herramientas](#herramientas)
 - </> [Lenguajes](#lenguajes)
 - :gear: [Procesamiento y preparación de datos](#procesamiento-y-preparación-de-datos)
-- ::memo::pencil: [Ficha Técnica y Documentación](/Ficha_Tecnica/FT_Proyecto5ETL.pdf)
+- ::memo: [Ficha Técnica y Documentación](/Ficha_Tecnica/README.md)
 - :bar_chart: [Visualización y Análisis de Datos](/Visualizacion/README.md)
 - :heavy_check_mark: [Conclusiones y Recomendaciones](/Presentacion/README.md)
 
