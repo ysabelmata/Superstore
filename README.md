@@ -5,7 +5,7 @@
 - :hammer_and_wrench: [Herramientas](#herramientas)
 - </> [Lenguajes](#lenguajes)
 - :gear: [Procesamiento y preparación de datos](#procesamiento-y-preparación-de-datos)
-- ::memo::pencil: [Ficha Técnica y Documentación](/Ficha_Tecnica/superstore.mwb)
+- ::memo::pencil: [Ficha Técnica y Documentación](/Ficha_Tecnica/FT_Proyecto5ETL.pdf)
 - :bar_chart: [Visualización y Análisis de Datos](/Visualizacion/README.md)
 - :heavy_check_mark: [Conclusiones y Recomendaciones](/Presentacion/README.md)
 
@@ -37,7 +37,7 @@ A través del proceso ETL(Extracción, Transformación y Carga), construir un si
 
 * Se hizo Web scraping, se utilizó Python para extraer los datos de la tabla “multinacional” de la página https://en.wikipedia.org/wiki/List_of_supermarket_chains, para incluir a los competidores en la estructura de datos de la empresa Super Store. Se eliminaron 59 registros  del archivo multinational.csv, que no tenían datos en las columnas de num_ empleado,  num_locat y  served_countries.
 
-Para ver el diseño de la Estructura de la Base de datos revisar: [Ficha Técnica y Documentación](/Ficha_Tecnica/superstore.mwb)
+Para ver el diseño de la Estructura de la Base de datos revisar: [Ficha Técnica y Documentación](/Ficha_Tecnica/FT_Proyecto5ETL.pdf)
 
 ## Herramientas
 
