@@ -205,112 +205,112 @@ FROM `Dataset.superstore`
 ---------------query para crear tabla categorias--------------------------
 CREATE OR REPLACE TABLE `Dataset.categorias` AS
 WITH categorias_distinct AS (
-   SELECT DISTINCT
-       category AS categoria,
-   FROM `Dataset.superstore`
+    SELECT DISTINCT
+        category AS categoria,
+    FROM `Dataset.superstore`
 )
-SELECT
-   ROW_NUMBER() OVER() AS id_categoria,  -- Autoincremental basado en ROW_NUMBER
-   categoria,
+SELECT 
+    ROW_NUMBER() OVER() AS id_categoria,  -- Autoincremental basado en ROW_NUMBER
+    categoria,
 FROM categorias_distinct;
 
 
 ---------------query para crear tabla subcategorias--------------------------
 CREATE OR REPLACE TABLE `Dataset.subcategorias` AS
 WITH subcategorias_distinct AS (
-   SELECT DISTINCT
-       sub_category AS subcategoria,
-   FROM `Dataset.superstore`
+    SELECT DISTINCT
+        sub_category AS subcategoria,
+    FROM `Dataset.superstore`
 )
-SELECT
-   ROW_NUMBER() OVER() AS id_subcategoria,  -- Autoincremental basado en ROW_NUMBER
-   subcategoria,
+SELECT 
+    ROW_NUMBER() OVER() AS id_subcategoria,  -- Autoincremental basado en ROW_NUMBER
+    subcategoria,
 FROM subcategorias_distinct;
-
-
-
 
 -----------------query para crear tabla clientes--------------------
 CREATE OR REPLACE TABLE `Dataset.clientes` AS
 SELECT DISTINCT
-   customer_id,
-   customer_name,
-   segment
+    customer_id,
+    customer_name,
+    segment
 FROM `Dataset.superstore`;
 
-
------------------------query para crear tablas productos-----------------51290
+-----------------------query para crear tablas productos-----------------10292
 CREATE OR REPLACE TABLE `Dataset.productos` AS
 WITH productos_unicos AS (
-   SELECT
-       product_id,
-       MIN(product_name) AS product_name,  -- Obtenemos solo uno de los nombres de producto (puede ser MIN o MAX)
-       MIN(c.id_categoria) AS id_categoria,  -- Escogemos una categoría para cada product_id
-       MIN(sc.id_subcategoria) AS id_subcategoria  -- Escogemos una subcategoría para cada product_id
-   FROM `Dataset.superstore` s
-   JOIN `Dataset.categorias` c
-   ON category = c.categoria
-   JOIN `Dataset.subcategorias` sc
-   ON sub_category = sc.subcategoria
-   GROUP BY product_id  -- Agrupamos por product_id para obtener uno único
+    SELECT 
+        product_id,
+        MIN(product_name) AS product_name,  -- Obtenemos solo uno de los nombres de producto (puede ser MIN o MAX)
+        MIN(c.id_categoria) AS id_categoria,  -- Escogemos una categoría para cada product_id
+        MIN(sc.id_subcategoria) AS id_subcategoria,  -- Escogemos una subcategoría para cada product_id  
+    FROM `Dataset.superstore` s
+    JOIN `Dataset.categorias` c
+    ON category = c.categoria
+    JOIN `Dataset.subcategorias` sc
+    ON sub_category = sc.subcategoria
+    GROUP BY product_id  -- Agrupamos por product_id para obtener uno único
 )
 SELECT
-   product_id,
-   product_name,
-   id_categoria ,
-   id_subcategoria
+    product_id,
+    product_name,
+    id_categoria ,
+    id_subcategoria
 FROM productos_unicos
 ORDER BY id_categoria;
--- Crear la tabla `ordenes`
+
+
+-----51290--------
+select order_id
+from `Dataset.superstore`
+
+
+-- Crear la tabla `ordenes` 
 CREATE TABLE `Dataset.ordenes` AS
-   SELECT
-       order_id,
-       DATE(order_date) AS order_date,
-       order_priority,
-       product_id,
-       city,
-       region,
-       DATE(ship_date) AS ship_date,
-       ship_mode,
-       shipping_cost
-   FROM `Dataset.superstore` ;
-  
+    SELECT 
+        order_id,
+        DATE(order_date) AS order_date,
+        order_priority,
+        product_id,
+        quantity,
+        sales,
+        profit,
+        discount,
+        city,
+        region,
+        DATE(ship_date) AS ship_date,
+        ship_mode,
+        shipping_cost
+    FROM `Dataset.superstore` ;
+    
 
-
---------------query para crear tabla ventas_superstore----------------------
-
-
+--------------query para crear tabla ventas_superstore. 25754----------------------
 CREATE OR REPLACE TABLE `Dataset.ventas_superstore` AS
 WITH order_product_agg AS (
-   SELECT
-       s.order_id,
-       o.order_date,
-       c.customer_id,
-       STRING_AGG(CAST(p.product_id AS STRING), ', ') AS product_ids, -- Concatenar productos en una sola columna
-       SUM(s.sales) AS total_sales,    -- Sumar las ventas por orden
-       SUM(s.profit) AS total_profit,  -- Sumar las ganancias por orden
-       SUM(s.quantity) AS total_quantity, -- Sumar la cantidad total
-       AVG(s.discount) AS avg_discount,   -- Promedio del descuento por orden
-       s.country,
-       s.state,
-       INITCAP(LOWER(s.market)) AS market,  -- Convertir el market a minúsculas y luego capitalizar la primera letra de cada palabra
-       s.year,
-       s.weeknum
-   FROM `Dataset.superstore` s
-   LEFT JOIN `Dataset.clientes` c
-       ON s.customer_id = c.customer_id
-   LEFT JOIN `Dataset.productos` p
-       ON s.product_id = p.product_id
-   LEFT JOIN `Dataset.ordenes` o
-       ON s.order_id = o.order_id
-   WHERE c.customer_id IS NOT NULL
-   AND p.product_id IS NOT NULL
-   AND o.order_id IS NOT NULL
-   GROUP BY
-       s.order_id, o.order_date, c.customer_id, s.country,
-       s.state, s.market, s.year, s.weeknum
+    SELECT 
+        CONCAT(s.order_id, '-', c.customer_id) AS id_venta,
+        s.order_id,
+        MAX(o.order_date) AS order_date,
+        c.customer_id,
+        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT CAST(p.product_id AS STRING)), ', ') AS product_ids,
+        SUM(s.sales) AS total_sales,
+        SUM(s.profit) AS total_profit,
+        SUM(s.quantity) AS total_quantity,
+        AVG(s.discount) AS avg_discount,
+        s.country,
+        s.state,
+        INITCAP(LOWER(s.market)) AS market,
+        s.year,
+        s.weeknum
+    FROM `Dataset.superstore` s
+    JOIN `Dataset.clientes` c ON s.customer_id = c.customer_id
+    JOIN `Dataset.productos` p ON s.product_id = p.product_id
+    JOIN `Dataset.ordenes` o ON s.order_id = o.order_id
+    WHERE c.customer_id IS NOT NULL
+    AND p.product_id IS NOT NULL
+    AND o.order_id IS NOT NULL
+    GROUP BY s.order_id, c.customer_id, s.country, s.state, s.market, s.year, s.weeknum
 )
-SELECT * FROM order_product_agg;
+SELECT DISTINCT * FROM order_product_agg;
 
 
 --------Medidas de tendencia central-------
